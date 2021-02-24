@@ -4,7 +4,7 @@ const Base = require(join(__dirname, '.', 'Base.js'));
 const WarBoard = require(join(__dirname, '.', 'WarBoard.js'));
 const { States } = require(join(__dirname, '..', 'util', 'constants.js'));
 
-const { announceChannelID, warCategoryID } = require(join(__dirname, '../..', 'config.js'));
+const { ids } = require(join(__dirname, '../..', 'config.json'));
 
 module.exports = class extends Base {
     constructor(client, data) {
@@ -24,11 +24,11 @@ module.exports = class extends Base {
     }
 
     get announceChannel() {
-        return this.client.guild.channels.cache.get(announceChannelID);
+        return this.client.guild.channels.cache.get(ids.announceChannel);
     }
 
     get warCategory() {
-        return this.client.guild.channels.cache.get(warCategoryID);
+        return this.client.guild.channels.cache.get(ids.warCategory);
     }
 
     get id() {

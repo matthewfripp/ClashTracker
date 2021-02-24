@@ -9,8 +9,8 @@ const { join } = require('path');
 const War = require(join(__dirname, '.', 'War.js'));
 
 const {
-    cocToken, discordToken, ownerID, clanTag, prefix, warInterval, guildID, memberInterval,
-} = require(join(__dirname, '../..', 'config.js'));
+    tokens, ids, intervals, clanTag, prefix,
+} = require(join(__dirname, '../..', 'config.json'));
 
 const { States, FormattedRoles } = require(join(__dirname, '..', 'util', 'constants.js'));
 const { compareTag } = require(join(__dirname, '..', 'util', 'functions.js'));
@@ -18,7 +18,7 @@ const { compareTag } = require(join(__dirname, '..', 'util', 'functions.js'));
 module.exports = class extends AkairoClient {
     constructor() {
         super({
-            ownerID,
+            ownerID: ids.owner,
         }, {
             disableEveryone: true,
             disabledEvents: ['TYPING_START'],
@@ -35,12 +35,12 @@ module.exports = class extends AkairoClient {
         });
 
         this.db = sqlite('database.db', { verbose: console.log });
-        this.coc = new Client({ token: cocToken });
+        this.coc = new Client({ token: tokens.coc });
         this.war = null;
     }
 
     get guild() {
-        return this.guilds.cache.get(guildID);
+        return this.guilds.cache.get(ids.guild);
     }
 
     async pollWar() {
@@ -134,7 +134,7 @@ module.exports = class extends AkairoClient {
 
         this.commandHandler.loadAll();
         this.listenerHandler.loadAll();
-        return this.login(discordToken);
+        return this.login(tokens.discord);
     }
 
     async start() {
@@ -145,8 +145,8 @@ module.exports = class extends AkairoClient {
 
         const dbWar = this.db.prepare('SELECT * FROM wars WHERE id = ?').get(this.war.id);
 
-        this.setInterval(() => this.pollWar(), warInterval);
-        this.setInterval(() => this.pollMembers(), memberInterval);
+        this.setInterval(() => this.pollWar(), intervals.war);
+        this.setInterval(() => this.pollMembers(), intervals.member);
 
         if (this.war.state !== dbWar?.state || this.war.startTime !== dbWar?.startTime) this.updateWar(null, this.war);
     }

@@ -8,7 +8,7 @@ const Canvas = require(join(__dirname, '.', 'Canvas.js'));
 const { States, FormattedStates } = require(join(__dirname, '..', 'util', 'constants.js'));
 const { compareTag, fixISO } = require(join(__dirname, '..', 'util', 'functions.js'));
 
-const { clanTag, clanChannelID, opponentChannelID } = require(join(__dirname, '../..', 'config.js'));
+const { clanTag, ids } = require(join(__dirname, '../..', 'config.json'));
 
 module.exports = class extends Base {
     constructor(war, clan) {
@@ -22,7 +22,7 @@ module.exports = class extends Base {
     }
 
     get channel() {
-        return this.client.guild.channels.cache.get(this.isOpponent ? opponentChannelID : clanChannelID);
+        return this.client.guild.channels.cache.get(this.isOpponent ? ids.oppoentChannel : ids.clanChannel);
     }
 
     async create() {

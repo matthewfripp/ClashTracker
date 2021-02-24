@@ -1,7 +1,7 @@
 const { Command } = require('discord-akairo');
 const { join } = require('path');
 
-const { clanTag } = require(join(__dirname, '../..', 'config.js'));
+const { clanTag } = require(join(__dirname, '../..', 'config.json'));
 const { Roles } = require(join(__dirname, '..', 'util', 'constants.js'));
 const { compareTag } = require(join(__dirname, '..', 'util', 'functions.js'));
 

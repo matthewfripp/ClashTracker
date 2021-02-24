@@ -1,0 +1,23 @@
+{
+    "tokens": {
+        "discord": "",
+        "coc": ""
+    },
+
+    "ids": {
+        "owner": "",
+        "guild": "",
+        "announcementChannel": "",
+        "clanChannel": "",
+        "opponentChannel": "",
+        "warCategory": ""
+    },
+
+    "intervals": {
+        "war": 600000,
+        "member": 1800000
+    },
+
+    "prefix": "",
+    "clanTag": ""
+}
