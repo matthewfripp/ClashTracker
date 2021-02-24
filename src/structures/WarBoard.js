@@ -22,7 +22,7 @@ module.exports = class extends Base {
     }
 
     get channel() {
-        return this.client.guild.channels.cache.get(this.isOpponent ? ids.oppoentChannel : ids.clanChannel);
+        return this.client.guild.channels.cache.get(this.isOpponent ? ids.opponentChannel : ids.clanChannel);
     }
 
     async create() {

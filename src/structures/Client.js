@@ -83,8 +83,6 @@ module.exports = class extends AkairoClient {
     }
 
     async updateWar(oldWar, newWar) {
-        await newWar.topic();
-
         if (newWar.state === States.NOT_IN_WAR) {
             await newWar.clear();
             await newWar.save();
@@ -92,6 +90,7 @@ module.exports = class extends AkairoClient {
         }
 
         if (!oldWar || oldWar.state !== newWar.state) {
+            await newWar.topic();
             await newWar.clear();
             await newWar.emoji();
             await newWar.create();
@@ -116,6 +115,8 @@ module.exports = class extends AkairoClient {
             const difference = newAttacks.filter(newA => oldAttacks.every(oldA => !shallowCompare(newA, oldA)));
             // this.updateAttacks(difference);
         }
+
+        await newWar.topic();
     }
 
     async updateAttacks(attacks) {

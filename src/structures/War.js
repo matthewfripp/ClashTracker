@@ -23,8 +23,8 @@ module.exports = class extends Base {
         };
     }
 
-    get announceChannel() {
-        return this.client.guild.channels.cache.get(ids.announceChannel);
+    get announcementChannel() {
+        return this.client.guild.channels.cache.get(ids.announcementChannel);
     }
 
     get warCategory() {
@@ -78,7 +78,7 @@ module.exports = class extends Base {
             default: return;
         }
 
-        return this.announceChannel.send(announcement);
+        return this.announcementChannel.send(announcement);
     }
 
     async save() {
