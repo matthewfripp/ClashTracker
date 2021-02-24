@@ -1,0 +1,18 @@
+CREATE TABLE IF NOT EXISTS members (
+  tag TEXT NOT NULL UNIQUE PRIMARY KEY,
+  role TEXT NOT NULL,
+  discord TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS attacks (
+  id SERIAL PRIMARY KEY,
+  attackerTag TEXT NOT NULL,
+  defenderTag TEXT NOT NULL,
+  destructionPercentage INTEGER NOT NULL,
+  stars INTEGER NOT NULL
+);
+CREATE TABLE IF NOT EXISTS wars (
+  id TEXT PRIMARY KEY,
+  state TEXT NOT NULL,
+  startTime TEXT NOT NULL,
+  endTime TEXT NOT NULL
+);
