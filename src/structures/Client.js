@@ -47,10 +47,45 @@ module.exports = class extends AkairoClient {
         const data = await this.coc.currentClanWar(clanTag);
         if (!data.ok) return;
 
-        const updatedWar = new War(this, data);
+        const oldWar = this.war;
+        const newWar = new War(this, data);
 
-        this.updateWar(this.war, updatedWar);
-        this.war = updatedWar;
+        if (newWar.state === States.NOT_IN_WAR) {
+            await newWar.clear();
+            await newWar.save();
+            return newWar.show(false);
+        }
+
+        if (!oldWar || oldWar.state !== newWar.state) {
+            await newWar.topic();
+            await newWar.clear();
+            await newWar.emoji();
+            await newWar.create();
+            await newWar.show(true);
+            await newWar.announce();
+            return newWar.save();
+        }
+
+        await newWar.topic();
+
+        if (newWar.state !== States.IN_WAR) return;
+
+        for (const k of Object.keys(newWar.boards)) {
+            if (oldWar[k].attacks === newWar[k].attacks) continue;
+            await oldWar.boards[k].clear();
+            await newWar.boards[k].create();
+
+            const shallowCompare = (obj1, obj2) => Object.keys(obj1).length === Object.keys(obj2).length && Object.keys(obj1).every(key => obj1[key] === obj2[key]);
+            const attacks = m => m.attacks || [];
+
+            const oldAttacks = oldWar[k].members.flatMap(attacks);
+            const newAttacks = newWar[k].members.flatMap(attacks);
+
+            const difference = newAttacks.filter(newA => oldAttacks.every(oldA => !shallowCompare(newA, oldA)));
+            // this.updateAttacks(difference);
+        }
+
+        this.war = newWar;
     }
 
     async pollMembers() {
@@ -80,43 +115,6 @@ module.exports = class extends AkairoClient {
 
             if (Object.keys(toEdit).length) await member.edit(toEdit);
         }
-    }
-
-    async updateWar(oldWar, newWar) {
-        if (newWar.state === States.NOT_IN_WAR) {
-            await newWar.clear();
-            await newWar.save();
-            return newWar.show(false);
-        }
-
-        if (!oldWar || oldWar.state !== newWar.state) {
-            await newWar.topic();
-            await newWar.clear();
-            await newWar.emoji();
-            await newWar.create();
-            await newWar.show(true);
-            await newWar.announce();
-            return newWar.save();
-        }
-
-        if (newWar.state !== States.IN_WAR) return;
-
-        for (const k of Object.keys(newWar.boards)) {
-            if (oldWar[k].attacks === newWar[k].attacks) continue;
-            await oldWar.boards[k].clear();
-            await newWar.boards[k].create();
-
-            const shallowCompare = (obj1, obj2) => Object.keys(obj1).length === Object.keys(obj2).length && Object.keys(obj1).every(key => obj1[key] === obj2[key]);
-            const attacks = m => m.attacks || [];
-
-            const oldAttacks = oldWar[k].members.flatMap(attacks);
-            const newAttacks = newWar[k].members.flatMap(attacks);
-
-            const difference = newAttacks.filter(newA => oldAttacks.every(oldA => !shallowCompare(newA, oldA)));
-            // this.updateAttacks(difference);
-        }
-
-        await newWar.topic();
     }
 
     async updateAttacks(attacks) {
