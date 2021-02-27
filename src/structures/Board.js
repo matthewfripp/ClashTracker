@@ -3,8 +3,8 @@ const { join } = require('path');
 const Base = require(join(__dirname, '.', 'Base.js'));
 
 module.exports = class extends Base {
-    async clear() {
-        await this.channel.bulkDelete(100).catch(() => { });
+    clear() {
+        return this.channel.bulkDelete(100).catch(() => { });
     }
 
     number(number, opponent) {

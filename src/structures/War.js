@@ -69,21 +69,17 @@ module.exports = class extends Base {
     }
 
     announce() {
-        const { guild } = this.client;
+        const { guild, war } = this.client;
         const swordsEmoji = guild.emojis.cache.find(e => e.name === 'swords');
-        let announcement = `${swordsEmoji} War against **${this.opponent.name}** ${guild.emojis.cache.find(x => x.name === 'opponent')}`;
+        const announcement = `${swordsEmoji} War against **${this.opponent.name}** ${guild.emojis.cache.find(x => x.name === 'opponent')} `;
 
-        switch (this.client.war.state) {
-            case States.IN_WAR: announcement += ' has started!';
-                break;
-            case States.PREPARATION: announcement += ' has been declared!';
-                break;
-            case States.WAR_ENDED: announcement += ' has ended!';
-                break;
-            default: return;
-        }
+        const suffixes = {
+            [States.IN_WAR]: 'has started',
+            [States.PREPARATION]: 'has been declared',
+            [States.WAR_ENDED]: 'has ended',
+        };
 
-        return this.announcementChannel.send(announcement);
+        return this.announcementChannel.send(announcement + suffixes[war.state]);
     }
 
     async save() {

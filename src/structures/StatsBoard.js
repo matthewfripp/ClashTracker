@@ -40,19 +40,26 @@ module.exports = class extends Board {
             .map(({ name, tag, league }) => {
                 const attacks = data.filter(d => compareTag(d.attackerTag, tag));
 
-                const average = prop => Math.round((attacks.reduce((acc, cur) => acc + cur[prop], 0) / attacks.length) * 10) / 10;
+                const round = x => Math.round(x * 10) / 10;
+                const average = prop => round(attacks.reduce((acc, cur) => acc + cur[prop], 0) / attacks.length);
 
                 const averageStars = average('stars');
                 const averageDestruction = average('destructionPercentage');
 
+                // Average attacks is a bit different
+                const warIDS = new Set(attacks.map(d => d.war));
+                console.log(warIDS);
+                const averageAttacks = round(attacks.length / warIDS.length);
+
                 return {
-                    tag, name, averageStars, averageDestruction, league,
+                    tag, name, averageStars, averageDestruction, league, averageAttacks,
                 };
             })
             .sort((a, b) => b.averageStars - a.averageStars)
             .map((m, i) => `${this.number(i + 1)}${this.league(m.league)} **${m.name}**\n`
                 + `\u200b          ${this.emoji('star')}    **\`${m.averageStars}\`**\n`
-                + `\u200b          ${this.emoji('destruction')}    **\`${m.averageDestruction}%\`**\n`)
+                + `\u200b          ${this.emoji('destruction')}    **\`${m.averageDestruction}%\`**\n`
+                + `\u200b          ${this.emoji('sword')}    **\`${m.averageAttacks}\`**\n`)
             .join('\n\n');
 
         return Util.splitMessage(text, { append: '\u200b\n' });

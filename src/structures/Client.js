@@ -83,7 +83,7 @@ module.exports = class extends AkairoClient {
             const newAttacks = newWar[k].members.flatMap(attacks);
 
             const difference = newAttacks.filter(newA => oldAttacks.every(oldA => !shallowCompare(newA, oldA)));
-            if (difference.length) this.updateAttacks(difference);
+            if (difference.length) this.updateAttacks(difference, newWar);
         }
     }
 
@@ -116,8 +116,8 @@ module.exports = class extends AkairoClient {
         }
     }
 
-    async updateAttacks(attacks) {
-        for (const a of attacks) this.db.prepare('INSERT INTO attacks VALUES(?, ?, ?, ?, ?)').run(null, a.attackerTag, a.defenderTag, a.destructionPercentage, a.stars);
+    async updateAttacks(attacks, war) {
+        for (const a of attacks) this.db.prepare('INSERT INTO attacks VALUES(?, ?, ?, ?, ?, ?)').run(null, a.attackerTag, a.defenderTag, a.destructionPercentage, a.stars, war.id);
 
         const dbAttacks = this.db.prepare('SELECT * FROM attacks').all();
         const clan = await this.coc.clan(clanTag);
