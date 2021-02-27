@@ -42,15 +42,15 @@ const Colors = {
 const Bars = {
     Star: {
         COLOR: Colors.ORANGE,
-        ICON: join(__dirname, '../..', 'assets', 'bars', 'star.png'),
+        ICON: join(__dirname, '../..', 'assets', 'star.png'),
     },
     Destruction: {
         COLOR: Colors.RED,
-        ICON: join(__dirname, '../..', 'assets', 'bars', 'destruction.png'),
+        ICON: join(__dirname, '../..', 'assets', 'destruction.png'),
     },
     Attack: {
         COLOR: Colors.GREY,
-        ICON: join(__dirname, '../..', 'assets', 'bars', 'attack.png'),
+        ICON: join(__dirname, '../..', 'assets', 'attack.png'),
     },
 };
 

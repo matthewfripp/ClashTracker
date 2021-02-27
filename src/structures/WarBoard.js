@@ -2,7 +2,7 @@ const { join } = require('path');
 const { Util } = require('discord.js');
 const { formatDistance } = require('date-fns');
 
-const Base = require(join(__dirname, '.', 'Base.js'));
+const Board = require(join(__dirname, '.', 'Board.js'));
 const Canvas = require(join(__dirname, '.', 'Canvas.js'));
 
 const { States, FormattedStates } = require(join(__dirname, '..', 'util', 'constants.js'));
@@ -10,7 +10,7 @@ const { compareTag, fixISO } = require(join(__dirname, '..', 'util', 'functions.
 
 const { clanTag, ids } = require(join(__dirname, '../..', 'config.json'));
 
-module.exports = class extends Base {
+module.exports = class extends Board {
     constructor(war, clan) {
         super(war.client);
         this.war = war;
@@ -34,10 +34,6 @@ module.exports = class extends Base {
         for (const message of messages) await this.channel.send(message);
     }
 
-    async clear() {
-        await this.channel.bulkDelete(100).catch(() => { });
-    }
-
     async topic() {
         const { state } = this.war;
         const startTime = new Date(fixISO(this.war.startTime));
@@ -50,17 +46,11 @@ module.exports = class extends Base {
     }
 
     generateText() {
-        const { isOpponent, war, client: { guild } } = this;
+        const {
+            isOpponent, war, emoji, number, townhall,
+        } = this;
 
-        const emojis = guild.emojis.cache;
-
-        const starEmoji = emojis.find(e => e.name === 'star');
-        const swordEmoji = emojis.find(e => e.name === 'sword');
-        const emptyStarEmoji = emojis.find(e => e.name === 'star_empty');
-
-        const stars = count => `${starEmoji}`.repeat(count) + `${emptyStarEmoji}`.repeat(3 - count);
-        const th = m => emojis.find(e => e.name === `th${m.townhallLevel}`);
-        const number = (n, opp) => [...`${n}`].map(x => emojis.find(e => e.name === `${x}_${opp ? '' : 'o'}`));
+        const stars = count => `${emoji('star')}`.repeat(count) + `${emoji('star_empty')}`.repeat(3 - count);
 
         const text = '\u200b\n' + this.clan.members
             .sort((a, b) => a.mapPosition - b.mapPosition)
@@ -68,12 +58,10 @@ module.exports = class extends Base {
                 const attackFormat = attack => {
                     const opponent = war[isOpponent ? 'clan' : 'opponent'].members.find(x => compareTag(x.tag, attack.defenderTag));
                     const percentage = `**\`${attack.destructionPercentage}%\`**`;
-                    return `\u200b          ${swordEmoji}    ${stars(attack.stars)} ${percentage}${' '.repeat(14 - percentage.length)}${th(opponent)} ${number(opponent.mapPosition, isOpponent).join('')}`;
+                    return `\u200b          ${emoji('sword')}    ${stars(attack.stars)} ${percentage}${' '.repeat(14 - percentage.length)}${townhall(opponent)} ${number(opponent.mapPosition, isOpponent)}`;
                 };
 
-                const mNum = number(i + 1, !isOpponent);
-
-                return `${mNum.join('')}${' '.repeat(mNum.length === 2 ? 7 : 13)}${th(m)} **${m.name}** ${war.state === States.IN_WAR ? `${swordEmoji}`.repeat(!m.attacks ? 2 : 2 - m.attacks.length) : ''}\n`
+                return `${number(i + 1, !isOpponent)}${townhall(m)} **${m.name}** ${war.state === States.IN_WAR ? `${emoji('sword')}`.repeat(!m.attacks ? 2 : 2 - m.attacks.length) : ''}\n`
                     + `${m.attacks ? m.attacks.map(attackFormat).join('\n') : ''}`;
             })
             .join('\n\n');

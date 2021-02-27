@@ -120,8 +120,11 @@ module.exports = class extends AkairoClient {
         for (const a of attacks) this.db.prepare('INSERT INTO attacks VALUES(?, ?, ?, ?, ?)').run(null, a.attackerTag, a.defenderTag, a.destructionPercentage, a.stars);
 
         const dbAttacks = this.db.prepare('SELECT * FROM attacks').all();
+        const clan = await this.coc.clan(clanTag);
 
-        const stats = new StatsBoard(this, dbAttacks);
+        const tags = clan.memberList.map(m => m.tag);
+
+        const stats = new StatsBoard(this, dbAttacks.filter(a => tags.includes(a.attackerTag)), clan);
         await stats.update();
         this.stats = stats;
     }
