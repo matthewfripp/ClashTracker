@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS members (
   discord TEXT NOT NULL
 );
 CREATE TABLE IF NOT EXISTS attacks (
-  id SERIAL PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
   attackerTag TEXT NOT NULL,
   defenderTag TEXT NOT NULL,
   destructionPercentage INTEGER NOT NULL,
