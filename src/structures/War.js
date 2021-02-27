@@ -71,12 +71,12 @@ module.exports = class extends Base {
     announce() {
         const { guild, war } = this.client;
         const swordsEmoji = guild.emojis.cache.find(e => e.name === 'swords');
-        const announcement = `${swordsEmoji} War against **${this.opponent.name}** ${guild.emojis.cache.find(x => x.name === 'opponent')} `;
+        const announcement = `${swordsEmoji} War against **${this.opponent.name}** ${guild.emojis.cache.find(x => x.name === 'opponent')} has`;
 
         const suffixes = {
-            [States.IN_WAR]: 'has started',
-            [States.PREPARATION]: 'has been declared',
-            [States.WAR_ENDED]: 'has ended',
+            [States.IN_WAR]: 'started',
+            [States.PREPARATION]: 'been declared',
+            [States.WAR_ENDED]: 'ended',
         };
 
         return this.announcementChannel.send(announcement + suffixes[war.state]);
