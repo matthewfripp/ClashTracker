@@ -9,7 +9,7 @@ module.exports = class extends Base {
 
     number(number, opponent) {
         const split = [...`${number}`];
-        return split.map(x => this.emoji(`${x}_${opponent ? '' : 'o'}`)).join(' ') + ' '.repeat(split.length === 2 ? 7 : 13);
+        return split.map(x => this.emoji(`${x}_${opponent ? 'o' : ''}`)).join(' ') + ' '.repeat(split.length === 2 ? 7 : 13);
     }
 
     townhall({ townhallLevel }) {
