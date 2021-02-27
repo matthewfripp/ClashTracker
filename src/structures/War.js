@@ -45,6 +45,11 @@ module.exports = class extends Base {
         await this.boards.opponent.clear();
     }
 
+    async update() {
+        await this.clear();
+        await this.create();
+    }
+
     async emoji() {
         const { guild } = this.client;
         const current = guild.emojis.cache.find(e => e.name === 'opponent');

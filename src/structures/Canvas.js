@@ -14,8 +14,6 @@ module.exports = class {
         const banner = await loadImage(join(__dirname, '../..', 'assets', 'banner.png'));
         const badge = await loadImage(clan.badgeUrls.medium);
 
-        // const { width } = banner;
-
         ctx.drawImage(banner, 0, 0);
         ctx.drawImage(badge, 10, 50);
         await this.bars(ctx, clan);
@@ -43,14 +41,12 @@ module.exports = class {
             ctx.stroke();
 
             // Apply tint
-
             this.roundRectangle(ctx, x, y, barWidth, barHeight, radius);
 
             ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
             ctx.fill();
 
             // Fill bar based on stats
-
             let multiplier;
             let max;
             let text;
@@ -74,7 +70,6 @@ module.exports = class {
             ctx.fill();
 
             // Apply reflection
-
             this.roundRectangle(ctx, x, y + barHeight * 0.1, reflectionWidth, reflectionHeight, radius);
 
             ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';

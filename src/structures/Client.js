@@ -7,6 +7,7 @@ const { readFileSync } = require('fs');
 const { join } = require('path');
 
 const War = require(join(__dirname, '.', 'War.js'));
+const StatsBoard = require(join(__dirname, '.', 'StatsBoard.js'));
 
 const {
     tokens, ids, intervals, clanTag, prefix,
@@ -37,6 +38,7 @@ module.exports = class extends AkairoClient {
         this.db = sqlite('database.db', { verbose: console.log });
         this.coc = new Client({ token: tokens.coc });
         this.war = null;
+        this.stats = null;
     }
 
     get guild() {
@@ -49,18 +51,17 @@ module.exports = class extends AkairoClient {
 
         const oldWar = this.war;
         const newWar = new War(this, data);
+        this.war = newWar;
 
         if (newWar.state === States.NOT_IN_WAR) {
-            await newWar.clear();
-            await newWar.save();
+            await newWar.update();
             return newWar.show(false);
         }
 
         if (!oldWar || oldWar.state !== newWar.state) {
             await newWar.topic();
-            await newWar.clear();
             await newWar.emoji();
-            await newWar.create();
+            await newWar.update();
             await newWar.show(true);
             await newWar.announce();
             return newWar.save();
@@ -82,10 +83,8 @@ module.exports = class extends AkairoClient {
             const newAttacks = newWar[k].members.flatMap(attacks);
 
             const difference = newAttacks.filter(newA => oldAttacks.every(oldA => !shallowCompare(newA, oldA)));
-            // this.updateAttacks(difference);
+            if (difference.length) this.updateAttacks(difference);
         }
-
-        this.war = newWar;
     }
 
     async pollMembers() {
@@ -122,7 +121,9 @@ module.exports = class extends AkairoClient {
 
         const dbAttacks = this.db.prepare('SELECT * FROM attacks').all();
 
-
+        const stats = new StatsBoard(this, dbAttacks);
+        await stats.update();
+        this.stats = stats;
     }
 
     async _init() {
