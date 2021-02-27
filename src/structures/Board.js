@@ -12,8 +12,8 @@ module.exports = class extends Base {
         return split.map(x => this.emoji(`${x}_${opponent ? '' : 'o'}`)).join(' ') + ' '.repeat(split.length === 2 ? 7 : 13);
     }
 
-    townhall(member) {
-        return this.emoji(`th${member.townhallLevel}`);
+    townhall({ townhallLevel }) {
+        return this.emoji(`th${townhallLevel}`);
     }
 
     league({ name }) {
