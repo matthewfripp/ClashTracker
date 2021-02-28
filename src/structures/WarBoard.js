@@ -62,9 +62,9 @@ module.exports = class extends Board {
                 };
 
                 return `${this.number(i + 1, isOpponent)}${this.townhall(m)} **${m.name}** ${war.state === States.IN_WAR ? `${this.emoji('sword')}`.repeat(!m.attacks ? 2 : 2 - m.attacks.length) : ''}\n`
-                    + `${m.attacks ? m.attacks.map(attackFormat).join('\n') : ''}`;
+                    + `${m.attacks ? m.attacks.map(attackFormat).join('\u200b\n') : ''}`;
             })
-            .join('\n\n');
+            .join('\u200b\n\n');
 
         return Util.splitMessage(text, { append: '\u200b\n' });
     }

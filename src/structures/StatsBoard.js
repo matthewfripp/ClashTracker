@@ -59,7 +59,7 @@ module.exports = class extends Board {
                 + `\u200b          ${this.emoji('star')}    **\`${m.averageStars}\`**\n`
                 + `\u200b          ${this.emoji('destruction')}    **\`${m.averageDestruction}%\`**\n`
                 + `\u200b          ${this.emoji('sword')}    **\`${m.averageAttacks}\`**\n`)
-            .join('\n\n');
+            .join('\u200b\n\n');
 
         return Util.splitMessage(text, { append: '\u200b\n' });
     }
