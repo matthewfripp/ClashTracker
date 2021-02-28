@@ -22,4 +22,6 @@ module.exports = {
     // Supercell consider 0 and O the same thing...
     compareTag: (a, b) => a.replace(/0|O/, '0') === b.replace(/0|O/, '0'),
 
+    shallowCompare: (objA, objB) => Object.keys(objA).length === Object.keys(objB).length && Object.keys(objA).every(key => objA[key] === objB[key]),
+
 };

@@ -71,7 +71,7 @@ module.exports = class extends Base {
     announce() {
         const { guild, war } = this.client;
         const swordsEmoji = guild.emojis.cache.find(e => e.name === 'swords');
-        const announcement = `${swordsEmoji} War against **${this.opponent.name}** ${guild.emojis.cache.find(x => x.name === 'opponent')} has`;
+        const announcement = `${swordsEmoji} War against **${this.opponent.name}** ${guild.emojis.cache.find(x => x.name === 'opponent')} has `;
 
         const suffixes = {
             [States.IN_WAR]: 'started',

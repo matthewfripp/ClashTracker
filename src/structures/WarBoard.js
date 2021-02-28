@@ -47,10 +47,10 @@ module.exports = class extends Board {
 
     generateText() {
         const {
-            isOpponent, war, emoji, number, townhall,
+            isOpponent, war,
         } = this;
 
-        const stars = count => `${emoji('star')}`.repeat(count) + `${emoji('star_empty')}`.repeat(3 - count);
+        const stars = count => `${this.emoji('star')}`.repeat(count) + `${this.emoji('star_empty')}`.repeat(3 - count);
 
         const text = '\u200b\n' + this.clan.members
             .sort((a, b) => a.mapPosition - b.mapPosition)
@@ -58,10 +58,10 @@ module.exports = class extends Board {
                 const attackFormat = attack => {
                     const opponent = war[isOpponent ? 'clan' : 'opponent'].members.find(x => compareTag(x.tag, attack.defenderTag));
                     const percentage = `**\`${attack.destructionPercentage}%\`**`;
-                    return `\u200b          ${emoji('sword')}    ${stars(attack.stars)} ${percentage}${' '.repeat(14 - percentage.length)}${townhall(opponent)} ${number(opponent.mapPosition, !isOpponent)}`;
+                    return `\u200b          ${this.emoji('sword')}    ${stars(attack.stars)} ${percentage}${' '.repeat(14 - percentage.length)}${this.townhall(opponent)} ${this.number(opponent.mapPosition, !isOpponent)}`;
                 };
 
-                return `${number(i + 1, isOpponent)}${townhall(m)} **${m.name}** ${war.state === States.IN_WAR ? `${emoji('sword')}`.repeat(!m.attacks ? 2 : 2 - m.attacks.length) : ''}\n`
+                return `${this.number(i + 1, isOpponent)}${this.townhall(m)} **${m.name}** ${war.state === States.IN_WAR ? `${this.emoji('sword')}`.repeat(!m.attacks ? 2 : 2 - m.attacks.length) : ''}\n`
                     + `${m.attacks ? m.attacks.map(attackFormat).join('\n') : ''}`;
             })
             .join('\n\n');

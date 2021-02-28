@@ -48,8 +48,7 @@ module.exports = class extends Board {
 
                 // Average attacks is a bit different
                 const warIDS = new Set(attacks.map(d => d.war));
-                console.log(warIDS);
-                const averageAttacks = round(attacks.length / warIDS.length);
+                const averageAttacks = round(attacks.length / warIDS.size);
 
                 return {
                     tag, name, averageStars, averageDestruction, league, averageAttacks,

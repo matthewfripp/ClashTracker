@@ -53,38 +53,14 @@ module.exports = class extends AkairoClient {
         const newWar = new War(this, data);
         this.war = newWar;
 
-        if (newWar.state === States.NOT_IN_WAR) {
-            await newWar.update();
-            return newWar.show(false);
-        }
+        this.updateWar(oldWar, newWar);
+    }
 
-        if (!oldWar || oldWar.state !== newWar.state) {
-            await newWar.topic();
-            await newWar.emoji();
-            await newWar.update();
-            await newWar.show(true);
-            await newWar.announce();
-            return newWar.save();
-        }
+    pollAttacks() {
+        if (![States.WAR_ENDED, States.IN_WAR].includes(this.war.state)) return;
+        const attacks = this.war.clan.members.flatMap(m => m.attacks || []);
 
-        await newWar.topic();
-
-        if (newWar.state !== States.IN_WAR) return;
-
-        for (const k of Object.keys(newWar.boards)) {
-            if (oldWar[k].attacks === newWar[k].attacks) continue;
-            await oldWar.boards[k].clear();
-            await newWar.boards[k].create();
-
-            const shallowCompare = (obj1, obj2) => Object.keys(obj1).length === Object.keys(obj2).length && Object.keys(obj1).every(key => obj1[key] === obj2[key]);
-            const attacks = m => m.attacks || [];
-
-            const oldAttacks = oldWar[k].members.flatMap(attacks);
-            const newAttacks = newWar[k].members.flatMap(attacks);
-
-            const difference = newAttacks.filter(newA => oldAttacks.every(oldA => !shallowCompare(newA, oldA)));
-            if (difference.length) this.updateAttacks(difference, newWar);
-        }
+        return this.updateAttacks(attacks);
     }
 
     async pollMembers() {
@@ -116,15 +92,31 @@ module.exports = class extends AkairoClient {
         }
     }
 
-    async updateAttacks(attacks, war) {
-        for (const a of attacks) this.db.prepare('INSERT INTO attacks VALUES(?, ?, ?, ?, ?, ?)').run(null, a.attackerTag, a.defenderTag, a.destructionPercentage, a.stars, war.id);
+    async updateWar(oldWar, newWar) {
+        if (newWar.state === States.NOT_IN_WAR) {
+            await newWar.update();
+            return newWar.show(false);
+        }
 
-        const dbAttacks = this.db.prepare('SELECT * FROM attacks').all();
+        if (!oldWar || oldWar.state !== newWar.state) {
+            await newWar.topic();
+            await newWar.emoji();
+            await newWar.update();
+            await newWar.show(true);
+            await newWar.announce();
+            return newWar.save();
+        }
+
+        return newWar.topic();
+    }
+
+    async updateAttacks(attacks) {
+        for (const a of attacks) this.db.prepare('INSERT OR IGNORE INTO attacks VALUES(?, ?, ?, ?, ?, ?)').run(null, a.attackerTag, a.defenderTag, a.destructionPercentage, a.stars, this.war.id);
+        attacks = this.db.prepare('SELECT * FROM attacks').all();
+
         const clan = await this.coc.clan(clanTag);
 
-        const tags = clan.memberList.map(m => m.tag);
-
-        const stats = new StatsBoard(this, dbAttacks.filter(a => tags.includes(a.attackerTag)), clan);
+        const stats = new StatsBoard(this, attacks, clan);
         await stats.update();
         this.stats = stats;
     }
@@ -149,6 +141,7 @@ module.exports = class extends AkairoClient {
         const dbWar = this.db.prepare('SELECT * FROM wars WHERE id = ?').get(this.war.id);
 
         this.setInterval(() => this.pollWar(), intervals.war);
+        this.setInterval(() => this.pollAttacks(), intervals.attacks);
         this.setInterval(() => this.pollMembers(), intervals.member);
 
         if (this.war.state !== dbWar?.state || this.war.startTime !== dbWar?.startTime) this.updateWar(null, this.war);

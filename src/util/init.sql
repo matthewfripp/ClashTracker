@@ -9,7 +9,8 @@ CREATE TABLE IF NOT EXISTS attacks (
   defenderTag TEXT NOT NULL,
   destructionPercentage INTEGER NOT NULL,
   stars INTEGER NOT NULL,
-  war TEXT NOT NULL
+  war TEXT NOT NULL,
+  UNIQUE (attackerTag, defenderTag, war)
 );
 CREATE TABLE IF NOT EXISTS wars (
   id TEXT PRIMARY KEY,
