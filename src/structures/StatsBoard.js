@@ -54,7 +54,7 @@ module.exports = class extends Board {
                     tag, name, averageStars, averageDestruction, league, averageAttacks,
                 };
             })
-            .sort((a, b) => b.averageStars - a.averageStars)
+            .sort((a, b) => b.averageStars - a.averageStars || b.averageDestruction - a.averageDestruction || b.averageAttacks - a.averageAttacks)
             .map((m, i) => `${this.number(i + 1)}${this.league(m.league)} **${m.name}**\n`
                 + `\u200b          ${this.emoji('star')}    **\`${m.averageStars}\`**\n`
                 + `\u200b          ${this.emoji('destruction')}    **\`${m.averageDestruction}%\`**\n`

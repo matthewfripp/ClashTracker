@@ -107,7 +107,15 @@ module.exports = class extends AkairoClient {
             return newWar.save();
         }
 
-        return newWar.topic();
+        await newWar.topic();
+
+        if (newWar.state !== States.IN_WAR) return;
+
+        for (const k of Object.keys(newWar.boards)) {
+            if (oldWar[k].attacks === newWar[k].attacks) continue;
+            await oldWar.boards[k].clear();
+            await newWar.boards[k].create();
+        }
     }
 
     async updateAttacks(attacks) {
