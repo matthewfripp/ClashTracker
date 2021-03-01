@@ -27,7 +27,7 @@ module.exports = class extends Board {
 
     async create() {
         const messages = this.generateText();
-        const banner = await Canvas.banner(this.clan);
+        const banner = await Canvas.banner(this.clan, this.war);
 
         await this.channel.send(banner);
 
@@ -61,7 +61,9 @@ module.exports = class extends Board {
                     return `\u200b          ${this.emoji('sword')}    ${stars(attack.stars)} ${percentage}${' '.repeat(14 - percentage.length)}${this.townhall(opponent)} ${this.number(opponent.mapPosition, !isOpponent)}`;
                 };
 
-                return `${this.number(i + 1, isOpponent)}${this.townhall(m)} **${m.name}** ${war.state === States.IN_WAR ? `${this.emoji('sword')}`.repeat(!m.attacks ? 2 : 2 - m.attacks.length) : ''}\n`
+                const maxAttacks = this.war.cwl ? 1 : 2;
+
+                return `${this.number(i + 1, isOpponent)}${this.townhall(m)} **${m.name}** ${war.state === States.IN_WAR ? `${this.emoji('sword')}`.repeat(!m.attacks ? maxAttacks : maxAttacks - m.attacks.length) : ''}\n`
                     + `${m.attacks ? m.attacks.map(attackFormat).join('\u200b\n') : ''}`;
             })
             .join('\u200b\n\n');

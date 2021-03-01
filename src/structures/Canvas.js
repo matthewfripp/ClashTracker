@@ -5,6 +5,7 @@ const { createCanvas, loadImage, registerFont } = require('canvas');
 registerFont('./assets/font.ttf', { family: 'Supercell' });
 
 const { Colors, Bars } = require(join(__dirname, '..', 'util', 'constants.js'));
+const { round } = require(join(__dirname, '..', 'util', 'functions.js'));
 
 module.exports = class {
     static async banner(clan) {
@@ -21,7 +22,7 @@ module.exports = class {
         return new MessageAttachment(canvas.toBuffer(), 'banner.png');
     }
 
-    static async bars(ctx, clan) {
+    static async bars(ctx, clan, war) {
         const barWidth = 400;
         const barHeight = 50;
 
@@ -58,9 +59,9 @@ module.exports = class {
             } if (type === 'Destruction') {
                 max = 100;
                 multiplier = clan.destructionPercentage / max;
-                text = `${clan.destructionPercentage}%`;
+                text = `${round(clan.destructionPercentage)}%`;
             } if (type === 'Attack') {
-                max = clan.members.length * 2;
+                max = clan.members.length * war.cwl ? 1 : 2;
                 multiplier = clan.attacks / max;
                 text = clan.attacks;
             }

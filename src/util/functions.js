@@ -24,4 +24,6 @@ module.exports = {
 
     shallowCompare: (objA, objB) => Object.keys(objA).length === Object.keys(objB).length && Object.keys(objA).every(key => objA[key] === objB[key]),
 
+    round: x => Math.round(x * 10) / 10,
+
 };

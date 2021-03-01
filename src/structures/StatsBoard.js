@@ -5,7 +5,7 @@ const Board = require(join(__dirname, '.', 'Board.js'));
 const Canvas = require(join(__dirname, '.', 'Canvas.js'));
 
 const { ids } = require(join(__dirname, '../..', 'config.json'));
-const { compareTag } = require(join(__dirname, '..', 'util', 'functions.js'));
+const { compareTag, round } = require(join(__dirname, '..', 'util', 'functions.js'));
 
 module.exports = class extends Board {
     constructor(client, data, clan) {
@@ -27,11 +27,6 @@ module.exports = class extends Board {
         for (const message of messages) await this.channel.send(message);
     }
 
-    async update() {
-        await this.clear();
-        await this.create();
-    }
-
     generateText() {
         const { data } = this;
 
@@ -39,8 +34,6 @@ module.exports = class extends Board {
             .filter(m => data.map(d => d.attackerTag).includes(m.tag))
             .map(({ name, tag, league }) => {
                 const attacks = data.filter(d => compareTag(d.attackerTag, tag));
-
-                const round = x => Math.round(x * 10) / 10;
                 const average = prop => round(attacks.reduce((acc, cur) => acc + cur[prop], 0) / attacks.length);
 
                 const averageStars = average('stars');

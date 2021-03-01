@@ -23,7 +23,7 @@ module.exports = class extends Command {
   async exec(message, { query }) {
     try {
       const evaled = await eval(query); // eslint-disable-line no-eval
-      const response = `\`\`\`js\n${clean(inspect(evaled, { depth: 0 }), message.client.token)}\n\`\`\``;
+      const response = `\`\`\`js\n${clean(inspect(evaled, { depth: 2 }), message.client.token)}\n\`\`\``;
 
       await message.util.send(response);
     } catch (err) {

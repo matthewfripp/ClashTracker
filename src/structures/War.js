@@ -16,6 +16,7 @@ module.exports = class extends Base {
         this.preparationStartTime = data.preparationStartTime;
         this.startTime = data.startTime;
         this.endTime = data.endTime;
+        this.cwl = 'warStartTime' in data;
 
         this.boards = {
             clan: new WarBoard(this, this.clan),
@@ -27,7 +28,7 @@ module.exports = class extends Base {
         return this.client.guild.channels.cache.get(ids.announcementChannel);
     }
 
-    get warCategory() {
+    get category() {
         return this.client.guild.channels.cache.get(ids.warCategory);
     }
 
@@ -65,7 +66,7 @@ module.exports = class extends Base {
     }
 
     show(showOrHide) {
-        return this.warCategory.updateOverwrite(this.client.guild.id, { VIEW_CHANNEL: showOrHide });
+        return this.category.updateOverwrite(this.client.guild.id, { VIEW_CHANNEL: showOrHide });
     }
 
     announce() {

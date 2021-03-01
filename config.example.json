@@ -16,7 +16,6 @@
 
     "intervals": {
         "war": 600000,
-        "attacks": 1200000,
         "member": 1800000
     },
 
