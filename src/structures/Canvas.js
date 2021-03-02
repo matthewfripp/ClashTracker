@@ -8,7 +8,7 @@ const { Colors, Bars } = require(join(__dirname, '..', 'util', 'constants.js'));
 const { round } = require(join(__dirname, '..', 'util', 'functions.js'));
 
 module.exports = class {
-    static async banner(clan) {
+    static async banner(clan, war) {
         const canvas = createCanvas(700, 300);
         const ctx = canvas.getContext('2d');
 
@@ -17,7 +17,7 @@ module.exports = class {
 
         ctx.drawImage(banner, 0, 0);
         ctx.drawImage(badge, 10, 50);
-        await this.bars(ctx, clan);
+        await this.bars(ctx, clan, war);
 
         return new MessageAttachment(canvas.toBuffer(), 'banner.png');
     }
